@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 data = pd.read_csv("../data/digits.csv", header=None)
 
@@ -10,7 +11,6 @@ n_campioni, n_pixel = X.shape
 print(f"Il dataset contiene {n_campioni} immagini, ognuna composta da {n_pixel} pixel.")
 
 # 2. Controlla quali numeri sono presenti (0, 1 ... 9)
-import numpy as np
 classi = np.unique(y)
 print(f"Le classi target sono: {classi}")
 
