@@ -58,10 +58,6 @@ print(f"Varianza spiegata dalla Componente 1: {variance[0] * 100:.2f}%")
 print(f"Varianza spiegata dalla Componente 2: {variance[1] * 100:.2f}%")
 print(f"Varianza totale mantenuta: {sum(variance) * 100:.2f}%")
 
-
-
-# --- ISSUE #4: RIPRODUZIONE DEL GRAFICO DELLE COMPONENTI ---
-
 # Creazione di una figura per vedere i punti
 plt.figure(figsize=(10, 8))
 
@@ -80,5 +76,8 @@ plt.title('Proiezione PCA del Dataset Digits')
 cbar = plt.colorbar(scatter, ticks=range(10))
 cbar.set_label('Classi (Numeri da 0 a 9)')
 
+# Salviamo il grafico
+plt.savefig('../output/pca_scatterplot.png', dpi=300, bbox_inches='tight')
+
 # Mostriamo il grafico a schermo
-plt.show()
+# plt.show()
