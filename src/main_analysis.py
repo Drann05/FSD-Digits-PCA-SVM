@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
 
 data = pd.read_csv("../data/digits.csv", header=None)
 
@@ -36,11 +37,6 @@ plt.savefig('../output/digit_sample.png', bbox_inches='tight')
 #plt.show()
 
 print(f"Visualizzazione completata. L'immagine rappresenta un: {y[index]}")
-
-
-
-# --- ISSUE #3: IMPLEMENTAZIONE PCA E VARIANZA ---
-from sklearn.decomposition import PCA
 
 # 1. Creiamo il modello PCA dicendogli di ridurre i dati a 2 dimensioni
 pca = PCA(n_components=2)
