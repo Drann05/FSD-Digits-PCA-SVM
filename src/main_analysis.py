@@ -36,3 +36,24 @@ plt.savefig('../output/digit_sample.png', bbox_inches='tight')
 #plt.show()
 
 print(f"Visualizzazione completata. L'immagine rappresenta un: {y[index]}")
+
+
+
+# --- ISSUE #3: IMPLEMENTAZIONE PCA E VARIANZA ---
+from sklearn.decomposition import PCA
+
+# 1. Creiamo il modello PCA dicendogli di ridurre i dati a 2 dimensioni
+pca = PCA(n_components=2)
+
+# 2. Addestriamo la PCA sui nostri pixel (X) e trasformiamo i dati
+X_pca = pca.fit_transform(X)
+
+print("\n--- RISULTATI PCA ---")
+print(f"Forma dei dati originali: {X.shape} (64 dimensioni)")
+print(f"Forma dei dati dopo la PCA: {X_pca.shape} (2 dimensioni)")
+
+# 3. Calcoliamo la Varianza Spiegata
+variance = pca.explained_variance_ratio_
+print(f"Varianza spiegata dalla Componente 1: {variance[0] * 100:.2f}%")
+print(f"Varianza spiegata dalla Componente 2: {variance[1] * 100:.2f}%")
+print(f"Varianza totale mantenuta: {sum(variance) * 100:.2f}%")
