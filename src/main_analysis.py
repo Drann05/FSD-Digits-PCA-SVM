@@ -64,8 +64,8 @@ plt.figure(figsize=(10, 8))
 # cmap='tab10' usa una tavolozza di 10 colori ben distinti
 scatter = plt.scatter(X_pca[:, 0], X_pca[:, 1], c=y, cmap='tab10', alpha=0.7, edgecolors='none', s=20)
 
-plt.xlabel('Component 1')
-plt.ylabel('Component 2')
+plt.xlabel('Principal Component 1')
+plt.ylabel('Principal Component 2')
 plt.title('Proiezione PCA del Dataset Digits')
 
 # Aggiungiamo la legenda laterale (Colorbar)
