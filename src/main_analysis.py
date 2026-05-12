@@ -56,13 +56,28 @@ print(f"Varianza spiegata dalla Componente 2: {variance[1] * 100:.2f}%")
 print(f"Varianza totale mantenuta: {sum(variance) * 100:.2f}%")
 
 # 4. Dividiamo i dati proiettati in training e test set (80% train, 20% test)
-X_train, X_test, y_train, y_test = train_test_split(X_pca, y, test_size=0.2)
+
+# Parametri per lo split
+random_state = 42
+test_size = 0.2
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X_pca, y, test_size=test_size, random_state=random_state, stratify=y
+)
 
 print("\n--- SPLIT TRAIN/TEST ---")
 print(
     f"Campioni per Training: {X_train.shape[0]} ({X_train.shape[0] / len(y) * 100:.1f}%)"
 )
 print(f"Campioni per Test: {X_test.shape[0]} ({X_test.shape[0] / len(y) * 100:.1f}%)")
+
+# Holdout estimation - Verifica distribuzione classi (per controllare la stratificazione)
+train_counts = pd.Series(y_train).value_counts().sort_index()
+test_counts = pd.Series(y_test).value_counts().sort_index()
+print("Distribuzione classi nel training set:")
+print(train_counts.to_string())
+print("Distribuzione classi nel test set:")
+print(test_counts.to_string())
 
 # Creazione di una figura per vedere i punti
 plt.figure(figsize=(10, 8))
