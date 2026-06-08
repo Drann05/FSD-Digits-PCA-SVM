@@ -95,6 +95,16 @@ print(f" - Training set: {X_train.shape[0]} campioni, {X_train.shape[1]} feature
 svm_model.fit(X_train, y_train)
 print(f"\nModello SVM addestrato con successo.")
 
+# Predizione sul set di test
+y_pred = svm_model.predict(X_test)
+
+# Valutazione delle performance
+accuracy = accuracy_score(y_test, y_pred)
+print(f"\nRisultati SVM:")
+print(f"Accuratezza del modello: {accuracy * 100:.2f}%")
+print("\nReport di classificazione dettagliato:")
+print(classification_report(y_test, y_pred))
+
 # Creazione di una figura per vedere i punti
 plt.figure(figsize=(10, 8))
 
