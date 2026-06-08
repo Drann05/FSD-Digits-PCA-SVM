@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
-from sklearn.metrics import accuracy_score, classification_report
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, ConfusionMatrixDisplay
 
 data = pd.read_csv("../data/digits.csv", header=None)
 
@@ -23,7 +23,6 @@ print(f"\nLe classi target sono: {classi}")
 print(f"\nDistribuzione delle classi:")
 print(pd.Series(y).value_counts().sort_index())
 
-
 index = 121
 
 # Ripristina la struttura bidimensionale 8x8
@@ -37,7 +36,6 @@ plt.axis("off")
 
 # Salva l'immagine
 plt.savefig("../output/digit_sample.png", bbox_inches="tight")
-# plt.show()
 
 print(f"\nVisualizzazione completata. L'immagine rappresenta un: {y[index]}")
 
@@ -81,6 +79,29 @@ print(train_counts.to_string())
 print(f"\nDistribuzione classi nel test set:")
 print(test_counts.to_string())
 
+# Creazione di una figura per vedere i punti
+plt.figure(figsize=(10, 8))
+
+# Disegniamo i punti (Scatter Plot)
+# X_pca[:, 0] prende tutte le righe della prima colonna (Asse X = PC1)
+# X_pca[:, 1] prende tutte le righe della seconda colonna (Asse Y = PC2)
+# c=y colora i punti in base alla loro etichetta vera (da 0 a 9)
+# cmap='tab10' usa una tavolozza di 10 colori ben distinti
+scatter = plt.scatter(
+    X_pca[:, 0], X_pca[:, 1], c=y, cmap="tab10", alpha=0.7, edgecolors="none", s=20
+)
+
+plt.xlabel("Principal Component 1")
+plt.ylabel("Principal Component 2")
+plt.title("Proiezione PCA del Dataset Digits")
+
+# Aggiungiamo la legenda laterale (Colorbar)
+cbar = plt.colorbar(scatter, ticks=range(10))
+cbar.set_label("Classi (Numeri da 0 a 9)")
+
+# Salviamo il grafico
+plt.savefig("../output/pca_scatterplot.png", dpi=300, bbox_inches="tight")
+
 # 5. Inizializzazione e Addestramento del modello SVM
 print("\n--- ADDESTRAMENTO SVM ---")
 
@@ -105,28 +126,18 @@ print(f"Accuratezza del modello: {accuracy * 100:.2f}%")
 print("\nReport di classificazione dettagliato:")
 print(classification_report(y_test, y_pred))
 
-# Creazione di una figura per vedere i punti
-plt.figure(figsize=(10, 8))
+# 6. Risultati Finali (matrice di confusione e metriche di accuratezza)
 
-# Disegniamo i punti (Scatter Plot)
-# X_pca[:, 0] prende tutte le righe della prima colonna (Asse X = PC1)
-# X_pca[:, 1] prende tutte le righe della seconda colonna (Asse Y = PC2)
-# c=y colora i punti in base alla loro etichetta vera (da 0 a 9)
-# cmap='tab10' usa una tavolozza di 10 colori ben distinti
-scatter = plt.scatter(
-    X_pca[:, 0], X_pca[:, 1], c=y, cmap="tab10", alpha=0.7, edgecolors="none", s=20
-)
+# Matrice di confusione
+print("\nGenerazione della Matrice di Confusione...")
 
-plt.xlabel("Principal Component 1")
-plt.ylabel("Principal Component 2")
-plt.title("Proiezione PCA del Dataset Digits")
+# Calcolo della matrice
+cm = confusion_matrix(y_test, y_pred, labels=svm_model.classes_)
 
-# Aggiungiamo la legenda laterale (Colorbar)
-cbar = plt.colorbar(scatter, ticks=range(10))
-cbar.set_label("Classi (Numeri da 0 a 9)")
+# Plot della matrice
+plt.figure(figsize=(8, 6))
+disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=svm_model.classes_)
+# Usiamo una mappa di colori blu per una visualizzazione pulita
+disp.plot(cmap='Blues', values_format='d', ax=plt.gca())
 
-# Salviamo il grafico
-plt.savefig("../output/pca_scatterplot.png", dpi=300, bbox_inches="tight")
-
-# Mostriamo il grafico a schermo
-# plt.show()
+plt.show()
