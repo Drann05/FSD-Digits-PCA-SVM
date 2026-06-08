@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, classification_report
 
 data = pd.read_csv("../data/digits.csv", header=None)
 
@@ -15,10 +17,10 @@ print(f"Il dataset contiene {n_campioni} immagini, ognuna composta da {n_pixel} 
 
 # Controlla quali numeri sono presenti (0, 1 ... 9)
 classi = np.unique(y)
-print(f"Le classi target sono: {classi}")
+print(f"\nLe classi target sono: {classi}")
 
 # Controlla se il dataset è bilanciato
-print("Distribuzione delle classi:")
+print(f"\nDistribuzione delle classi:")
 print(pd.Series(y).value_counts().sort_index())
 
 
@@ -37,7 +39,7 @@ plt.axis("off")
 plt.savefig("../output/digit_sample.png", bbox_inches="tight")
 # plt.show()
 
-print(f"Visualizzazione completata. L'immagine rappresenta un: {y[index]}")
+print(f"\nVisualizzazione completata. L'immagine rappresenta un: {y[index]}")
 
 # 1. Creiamo il modello PCA dicendogli di ridurre i dati a 2 dimensioni
 pca = PCA(n_components=2)
@@ -74,9 +76,9 @@ print(f"Campioni per Test: {X_test.shape[0]} ({X_test.shape[0] / len(y) * 100:.1
 # Holdout estimation - Verifica distribuzione classi (per controllare la stratificazione)
 train_counts = pd.Series(y_train).value_counts().sort_index()
 test_counts = pd.Series(y_test).value_counts().sort_index()
-print("Distribuzione classi nel training set:")
+print(f"\nDistribuzione classi nel training set:")
 print(train_counts.to_string())
-print("Distribuzione classi nel test set:")
+print(f"\nDistribuzione classi nel test set:")
 print(test_counts.to_string())
 
 # Creazione di una figura per vedere i punti
