@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, classification_report
 
 data = pd.read_csv("../data/digits.csv", header=None)
 
@@ -15,10 +17,10 @@ print(f"Il dataset contiene {n_campioni} immagini, ognuna composta da {n_pixel} 
 
 # Controlla quali numeri sono presenti (0, 1 ... 9)
 classi = np.unique(y)
-print(f"Le classi target sono: {classi}")
+print(f"\nLe classi target sono: {classi}")
 
 # Controlla se il dataset è bilanciato
-print("Distribuzione delle classi:")
+print(f"\nDistribuzione delle classi:")
 print(pd.Series(y).value_counts().sort_index())
 
 
@@ -37,7 +39,7 @@ plt.axis("off")
 plt.savefig("../output/digit_sample.png", bbox_inches="tight")
 # plt.show()
 
-print(f"Visualizzazione completata. L'immagine rappresenta un: {y[index]}")
+print(f"\nVisualizzazione completata. L'immagine rappresenta un: {y[index]}")
 
 # 1. Creiamo il modello PCA dicendogli di ridurre i dati a 2 dimensioni
 pca = PCA(n_components=2)
@@ -74,10 +76,34 @@ print(f"Campioni per Test: {X_test.shape[0]} ({X_test.shape[0] / len(y) * 100:.1
 # Holdout estimation - Verifica distribuzione classi (per controllare la stratificazione)
 train_counts = pd.Series(y_train).value_counts().sort_index()
 test_counts = pd.Series(y_test).value_counts().sort_index()
-print("Distribuzione classi nel training set:")
+print(f"\nDistribuzione classi nel training set:")
 print(train_counts.to_string())
-print("Distribuzione classi nel test set:")
+print(f"\nDistribuzione classi nel test set:")
 print(test_counts.to_string())
+
+# 5. Inizializzazione e Addestramento del modello SVM
+print("\n--- ADDESTRAMENTO SVM ---")
+
+# Inizializziamo il classificatore SVC con kernel RBF
+svm_model = SVC(kernel='rbf', C=1.0, gamma='scale', random_state=random_state)
+print(f"Configurazione modello:")
+print(f" - Kernel utilizzato: {svm_model.kernel}")
+print(f" - Parametro C: {svm_model.C}")
+print(f" - Training set: {X_train.shape[0]} campioni, {X_train.shape[1]} feature (componenti PCA)")
+
+# Addestriamo il modello sulle coordinate ottenute dalla PCA
+svm_model.fit(X_train, y_train)
+print(f"\nModello SVM addestrato con successo.")
+
+# Predizione sul set di test
+y_pred = svm_model.predict(X_test)
+
+# Valutazione delle performance
+accuracy = accuracy_score(y_test, y_pred)
+print(f"\nRisultati SVM:")
+print(f"Accuratezza del modello: {accuracy * 100:.2f}%")
+print("\nReport di classificazione dettagliato:")
+print(classification_report(y_test, y_pred))
 
 # Creazione di una figura per vedere i punti
 plt.figure(figsize=(10, 8))
