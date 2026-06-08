@@ -134,6 +134,16 @@ print("\nGenerazione della Matrice di Confusione...")
 # Calcolo della matrice
 cm = confusion_matrix(y_test, y_pred, labels=svm_model.classes_)
 
+print("\nMatrice di Confusione (Vista Console):")
+
+# Convertiamo la matrice in un DataFrame Pandas per una formattazione tabellare perfetta
+df_cm = pd.DataFrame(
+    cm, 
+    index=[f"Reale {i}" for i in range(10)], 
+    columns=[f"Pred {i}" for i in range(10)]
+)
+print(df_cm)
+
 # Plot della matrice
 plt.figure(figsize=(8, 6))
 disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=svm_model.classes_)
