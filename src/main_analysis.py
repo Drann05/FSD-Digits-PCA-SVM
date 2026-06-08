@@ -81,6 +81,20 @@ print(train_counts.to_string())
 print(f"\nDistribuzione classi nel test set:")
 print(test_counts.to_string())
 
+# 5. Inizializzazione e Addestramento del modello SVM
+print("\n--- ADDESTRAMENTO SVM ---")
+
+# Inizializziamo il classificatore SVC con kernel RBF
+svm_model = SVC(kernel='rbf', C=1.0, gamma='scale', random_state=random_state)
+print(f"Configurazione modello:")
+print(f" - Kernel utilizzato: {svm_model.kernel}")
+print(f" - Parametro C: {svm_model.C}")
+print(f" - Training set: {X_train.shape[0]} campioni, {X_train.shape[1]} feature (componenti PCA)")
+
+# Addestriamo il modello sulle coordinate ottenute dalla PCA
+svm_model.fit(X_train, y_train)
+print(f"\nModello SVM addestrato con successo.")
+
 # Creazione di una figura per vedere i punti
 plt.figure(figsize=(10, 8))
 
