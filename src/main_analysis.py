@@ -8,8 +8,8 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 
 data = pd.read_csv("../data/digits.csv", header=None)
 
-X = data.iloc[:, :-1].values
-y = data.iloc[:, -1].values
+X = data.iloc[:, :-1].to_numpy()
+y = data.iloc[:, -1].to_numpy()
 
 # Controlla quante immagini sono presenti e quanti pixel (64)
 n_campioni, n_pixel = X.shape
@@ -108,8 +108,8 @@ print("\n--- ADDESTRAMENTO SVM ---")
 # Inizializziamo il classificatore SVC con kernel RBF
 svm_model = SVC(kernel='rbf', C=1.0, gamma='scale', random_state=random_state)
 print(f"Configurazione modello:")
-print(f" - Kernel utilizzato: {svm_model.kernel}")
-print(f" - Parametro C: {svm_model.C}")
+print(f" - Kernel utilizzato: {svm_model.kernel}") # type: ignore
+print(f" - Parametro C: {svm_model.C}") # type: ignore
 print(f" - Training set: {X_train.shape[0]} campioni, {X_train.shape[1]} feature (componenti PCA)")
 
 # Addestriamo il modello sulle coordinate ottenute dalla PCA
