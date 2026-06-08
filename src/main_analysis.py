@@ -147,7 +147,15 @@ print(df_cm)
 # Plot della matrice
 plt.figure(figsize=(8, 6))
 disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=svm_model.classes_)
+
 # Usiamo una mappa di colori blu per una visualizzazione pulita
 disp.plot(cmap='Blues', values_format='d', ax=plt.gca())
 
+# Inseriamo l'accuracy direttamente nel titolo come richiesto
+plt.title(f'Matrice di Confusione SVM\n(Accuratezza: {accuracy * 100:.2f}%)')
+
+# Salvataggio dell'immagine
+plt.savefig('../output/confusion_matrix.png', dpi=300, bbox_inches='tight')
+
+# Mostriamo il grafico
 plt.show()
