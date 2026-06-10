@@ -4,12 +4,12 @@ import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
-from sklearn.metrics import accuracy_score, classification_report
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, ConfusionMatrixDisplay
 
 data = pd.read_csv("../data/digits.csv", header=None)
 
-X = data.iloc[:, :-1].values
-y = data.iloc[:, -1].values
+X = data.iloc[:, :-1].to_numpy()
+y = data.iloc[:, -1].to_numpy()
 
 # Controlla quante immagini sono presenti e quanti pixel (64)
 n_campioni, n_pixel = X.shape
@@ -22,7 +22,6 @@ print(f"\nLe classi target sono: {classi}")
 # Controlla se il dataset è bilanciato
 print(f"\nDistribuzione delle classi:")
 print(pd.Series(y).value_counts().sort_index())
-
 
 index = 121
 
@@ -37,7 +36,6 @@ plt.axis("off")
 
 # Salva l'immagine
 plt.savefig("../output/digit_sample.png", bbox_inches="tight")
-# plt.show()
 
 print(f"\nVisualizzazione completata. L'immagine rappresenta un: {y[index]}")
 
@@ -81,30 +79,6 @@ print(train_counts.to_string())
 print(f"\nDistribuzione classi nel test set:")
 print(test_counts.to_string())
 
-# 5. Inizializzazione e Addestramento del modello SVM
-print("\n--- ADDESTRAMENTO SVM ---")
-
-# Inizializziamo il classificatore SVC con kernel RBF
-svm_model = SVC(kernel='rbf', C=1.0, gamma='scale', random_state=random_state)
-print(f"Configurazione modello:")
-print(f" - Kernel utilizzato: {svm_model.kernel}")
-print(f" - Parametro C: {svm_model.C}")
-print(f" - Training set: {X_train.shape[0]} campioni, {X_train.shape[1]} feature (componenti PCA)")
-
-# Addestriamo il modello sulle coordinate ottenute dalla PCA
-svm_model.fit(X_train, y_train)
-print(f"\nModello SVM addestrato con successo.")
-
-# Predizione sul set di test
-y_pred = svm_model.predict(X_test)
-
-# Valutazione delle performance
-accuracy = accuracy_score(y_test, y_pred)
-print(f"\nRisultati SVM:")
-print(f"Accuratezza del modello: {accuracy * 100:.2f}%")
-print("\nReport di classificazione dettagliato:")
-print(classification_report(y_test, y_pred))
-
 # Creazione di una figura per vedere i punti
 plt.figure(figsize=(10, 8))
 
@@ -128,5 +102,60 @@ cbar.set_label("Classi (Numeri da 0 a 9)")
 # Salviamo il grafico
 plt.savefig("../output/pca_scatterplot.png", dpi=300, bbox_inches="tight")
 
-# Mostriamo il grafico a schermo
-# plt.show()
+# 5. Inizializzazione e Addestramento del modello SVM
+print("\n--- ADDESTRAMENTO SVM ---")
+
+# Inizializziamo il classificatore SVC con kernel RBF
+svm_model = SVC(kernel='rbf', C=1.0, gamma='scale', random_state=random_state)
+print(f"Configurazione modello:")
+print(f" - Kernel utilizzato: {svm_model.kernel}") # type: ignore
+print(f" - Parametro C: {svm_model.C}") # type: ignore
+print(f" - Training set: {X_train.shape[0]} campioni, {X_train.shape[1]} feature (componenti PCA)")
+
+# Addestriamo il modello sulle coordinate ottenute dalla PCA
+svm_model.fit(X_train, y_train)
+print(f"\nModello SVM addestrato con successo.")
+
+# Predizione sul set di test
+y_pred = svm_model.predict(X_test)
+
+# Valutazione delle performance
+accuracy = accuracy_score(y_test, y_pred)
+print(f"\nRisultati SVM:")
+print(f"Accuratezza del modello: {accuracy * 100:.2f}%")
+print("\nReport di classificazione dettagliato:")
+print(classification_report(y_test, y_pred))
+
+# 6. Risultati Finali (matrice di confusione e metriche di accuratezza)
+
+# Matrice di confusione
+print("\nGenerazione della Matrice di Confusione...")
+
+# Calcolo della matrice
+cm = confusion_matrix(y_test, y_pred, labels=svm_model.classes_)
+
+print("\nMatrice di Confusione (Vista Console):")
+
+# Convertiamo la matrice in un DataFrame Pandas per una formattazione tabellare perfetta
+df_cm = pd.DataFrame(
+    cm, 
+    index=[f"Reale {i}" for i in range(10)], 
+    columns=[f"Pred {i}" for i in range(10)]
+)
+print(df_cm)
+
+# Plot della matrice
+plt.figure(figsize=(8, 6))
+disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=svm_model.classes_)
+
+# Usiamo una mappa di colori blu per una visualizzazione pulita
+disp.plot(cmap='Blues', values_format='d', ax=plt.gca())
+
+# Inseriamo l'accuracy direttamente nel titolo come richiesto
+plt.title(f'Matrice di Confusione SVM\n(Accuratezza: {accuracy * 100:.2f}%)')
+
+# Salvataggio dell'immagine
+plt.savefig('../output/confusion_matrix.png', dpi=300, bbox_inches='tight')
+
+# Mostriamo il grafico
+plt.show()
